@@ -27,7 +27,7 @@ COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 RUN apk add --no-cache nginx
-RUN install-php-extensions imap intl pdo_mysql zip
+RUN install-php-extensions apcu imap intl opcache pdo_mysql zip
 
 # Use the default production configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
@@ -49,5 +49,5 @@ WORKDIR /app
 COPY --from=build /app /app
 COPY config/local.php /app/config/local.php
 
-RUN mkdir -p /app/config /app/media /app/translations /app/var && \
-    chown www-data:www-data /app/config /app/media /app/translations /app/var
+RUN mkdir -p /app/config /app/media/files /app/media/images /app/translations /app/var && \
+    chown -R www-data:www-data /app/config /app/media /app/translations /app/var
