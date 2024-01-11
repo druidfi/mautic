@@ -1,0 +1,50 @@
+services:
+
+  mautic:
+    container_name: mautic
+    image: druidfi/mautic:v5-rc2
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #volumes:
+    #  - ./config:/app/config
+    #  - ./mautic.crt:/app/var/cache/saml_default.crt
+    #  - ./mautic.key:/app/var/cache/saml_default.key
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=mautic-demo
+      - DB_USER=mautic-demo
+      - DB_PASSWD=mautic-demo
+      - MAUTIC_URL=https://mautic.docker.so
+      - MAUTIC_ADMIN_USERNAME=mautic@druid.fi
+      - MAUTIC_ADMIN_PASSWORD=mautic
+      - APP_ENV=prod
+      - APP_DEBUG=1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mautic.entrypoints=https"
+      - "traefik.http.routers.mautic.rule=Host(`mautic.docker.so`)"
+      - "traefik.http.routers.mautic.tls=true"
+      - "traefik.http.services.mautic.loadbalancer.server.port=8080"
+      - "traefik.docker.network=stonehenge-network"
+    networks:
+      - default
+      - stonehenge-network
+
+  db:
+    container_name: database
+    image: mariadb:10.11
+    ports:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: mautic-demo
+      MYSQL_USER: mautic-demo
+      MYSQL_PASSWORD: mautic-demo
+      MYSQL_ROOT_PASSWORD: mypassword
+
+networks:
+  stonehenge-network:
+    external: true
