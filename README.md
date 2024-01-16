@@ -3,21 +3,7 @@
 ## Create empty Mautic instance:
 
 ```console
-docker compose up --build --wait
-docker compose exec mautic bin/console mautic:install https://mautic.docker.so \
-  --db_driver=pdo_mysql \
-  --db_host=db \
-  --db_port=3306 \
-  --db_name=mautic-demo \
-  --db_user=mautic-demo \
-  --db_password=mautic-demo \
-  --db_backup_tables=false \
-  --db_backup_prefix=bak_ \
-  --admin_firstname=Mautic \
-  --admin_lastname=Admin \
-  --admin_username=mautic \
-  --admin_email=mautic@druid.fi \
-  --admin_password=mautic
+make fresh
 ```
 
 Open https://mautic.docker.so and use `mautic@druid.fi:mautic` as credentials.
@@ -35,7 +21,7 @@ Open https://mautic.docker.so and use `admin@yoursite.com:mautic` as credentials
 ## Open shell into the container:
 
 ```console
-docker compose exec mautic sh
+make shell
 ```
 
 ## Deployment
