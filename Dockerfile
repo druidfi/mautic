@@ -1,4 +1,7 @@
-FROM php:8.1-alpine AS build
+ARG PHP_VERSION=8.1
+ARG TIMEZONE=Europe/Helsinki
+
+FROM php:${PHP_VERSION}-alpine AS build
 
 WORKDIR /app
 
@@ -19,7 +22,9 @@ RUN rm -rf config media translations var
 #
 # PHP-FPM and Nginx
 #
-FROM php:8.1-fpm-alpine AS mautic-base
+FROM php:${PHP_VERSION}-fpm-alpine AS mautic-base
+
+ARG TIMEZONE
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 COPY docker/docker-php-entrypoint /usr/local/bin/

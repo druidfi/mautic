@@ -21,4 +21,16 @@ PHONY += open-db-gui
 open-db-gui: ## Open database with GUI tool
 	@open mysql://$(DB_USER):$(DB_PASS)@$(shell docker compose port db 3306 | grep -v ::)/$(DB_NAME)
 
+PHONY += shell
+shell:
+	docker compose exec mautic sh
+
+PHONY += build
+build:
+	docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load --set "*.platform=linux/arm64"
+
+PHONY += release
+release:
+	docker buildx bake -f docker-bake.hcl --pull --no-cache --push
+
 .PHONY: $(PHONY)

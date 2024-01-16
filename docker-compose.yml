@@ -2,12 +2,9 @@ services:
 
   mautic:
     container_name: mautic
-    image: druidfi/mautic:v5-rc2
+    image: druidfi/mautic:5.0.0
     depends_on:
       - db
-    build:
-      context: .
-      dockerfile: Dockerfile
     #volumes:
     #  - ./config:/app/config
     #  - ./mautic.crt:/app/var/cache/saml_default.crt
