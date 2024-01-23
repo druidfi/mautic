@@ -2,7 +2,7 @@ services:
 
   mautic:
     container_name: mautic
-    image: druidfi/mautic:5.0.0
+    image: druidfi/mautic:5.0.2
     depends_on:
       - db
     #volumes:

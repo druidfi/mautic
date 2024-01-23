@@ -1,0 +1,56 @@
+services:
+
+  mautic:
+    container_name: mautic
+    image: druidfi/mautic:5.0.2
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - media:/app/media
+      - var:/app/var
+    labels:
+      traefik.enable: true
+      traefik.http.routers.mautic.entrypoints: https
+      traefik.http.routers.mautic.rule: Host(`$MAUTIC_DOMAIN`)
+      traefik.http.routers.mautic.tls: true
+      traefik.http.services.mautic.loadbalancer.server.port: 8080
+      traefik.docker.network: traefik-network
+    networks:
+      - default
+      - traefik-network
+
+  db:
+    container_name: db
+    image: mariadb:10.11
+    volumes:
+      - db:/var/lib/mysql:Z
+    environment:
+      MYSQL_DATABASE: $DB_NAME
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PASSWD
+      MYSQL_ROOT_PASSWORD: nallikuumat
+
+networks:
+  traefik-network:
+    external: true
+
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data/db
+      o: bind
+  media:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data/media
+      o: bind
+  var:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data/var
+      o: bind

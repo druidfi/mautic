@@ -3,7 +3,7 @@ variable "REPO_NAME" {
 }
 
 variable "VERSION" {
-    default = "5.0.0"
+    default = "5.0.2"
 }
 
 group "default" {
