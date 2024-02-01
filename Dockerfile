@@ -6,7 +6,7 @@ FROM php:${PHP_VERSION}-alpine AS build
 WORKDIR /app
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
-ARG MAUTIC_VERSION=5.0.1
+ARG MAUTIC_VERSION=5.0.2
 
 COPY --link --from=composer/composer:2-bin /composer /usr/bin/composer
 
@@ -45,6 +45,19 @@ EXPOSE 8080
 CMD ["nginx"]
 
 #
+# NPM install
+#
+FROM node:18 as npm-build
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+RUN npx update-browserslist-db@latest
+RUN npm install
+RUN npm run build
+
+#
 # Mautic
 #
 FROM mautic-base AS mautic
@@ -52,6 +65,7 @@ FROM mautic-base AS mautic
 WORKDIR /app
 
 COPY --from=build /app /app
+COPY --from=npm-build /app/media/libraries /app/media/libraries
 COPY config/local.php /app/config/local.php
 
 RUN mkdir -p /app/config /app/media/files /app/media/images /app/translations /app/var && \
