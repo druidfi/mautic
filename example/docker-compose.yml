@@ -8,7 +8,9 @@ services:
       - path: ./.env
         required: true
     volumes:
-      - media:/app/media
+      - config:/app/config
+      - media_files:/app/media/files
+      - media_images:/app/media/images
       - var:/app/var
     labels:
       traefik.enable: true
@@ -20,6 +22,8 @@ services:
     networks:
       - default
       - traefik-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   db:
     container_name: db
@@ -41,17 +45,29 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ./data/db
+      device: ./db
       o: bind
-  media:
+  config:
     driver: local
     driver_opts:
       type: none
-      device: ./data/media
+      device: ./config
+      o: bind
+  media_files:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./media/files
+      o: bind
+  media_images:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./media/images
       o: bind
   var:
     driver: local
     driver_opts:
       type: none
-      device: ./data/var
+      device: ./var
       o: bind
