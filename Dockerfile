@@ -6,7 +6,7 @@ FROM php:${PHP_VERSION}-alpine AS build
 WORKDIR /app
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
-ARG MAUTIC_VERSION=5.0.2
+ARG MAUTIC_VERSION=5.0.3
 
 COPY --link --from=composer/composer:2-bin /composer /usr/bin/composer
 

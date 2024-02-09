@@ -2,7 +2,7 @@ services:
 
   mautic:
     container_name: mautic
-    image: druidfi/mautic:5.0.2
+    image: druidfi/mautic:5.0.3
     restart: unless-stopped
     env_file:
       - path: ./.env
