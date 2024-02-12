@@ -33,7 +33,7 @@ services:
 
   db:
     container_name: database
-    image: mariadb:10.11
+    image: mariadb:11.2
     ports:
       - "3306"
     environment:

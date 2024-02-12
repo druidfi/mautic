@@ -27,7 +27,7 @@ services:
 
   db:
     container_name: db
-    image: mariadb:10.11
+    image: mariadb:11.2
     volumes:
       - db:/var/lib/mysql:Z
     environment:
