@@ -47,7 +47,7 @@ CMD ["nginx"]
 #
 # NPM install
 #
-FROM node:18 as npm-build
+FROM node:20 as npm-build
 
 WORKDIR /app
 
