@@ -69,4 +69,4 @@ COPY --from=npm-build /app/media/libraries /app/media/libraries
 COPY config/local.php /app/config/local.php
 
 RUN mkdir -p /app/config /app/media/files /app/media/images /app/translations /app/var && \
-    chown -R www-data:www-data /app/config /app/media /app/translations /app/var
+    chown -R www-data:www-data /app/config /app/media /app/themes /app/translations /app/var
