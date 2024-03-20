@@ -1,5 +1,8 @@
 # Mautic v5 - Druid Variant
 
+> [!NOTE]
+> Now there are official Mautic v5 Docker images available: https://github.com/mautic/docker-mautic
+
 ## Create empty Mautic instance:
 
 ```console
