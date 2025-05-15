@@ -3,7 +3,13 @@
 ## Variants
 
 - `druidfi/mautic` - Default image with no DXP brand
-- `druidfi/mautic:dxp` - DXP branded image
+- `druidfi/mautic-dxp` - DXP branded image
+
+## Tagging
+
+- `:5` - Latest stable release
+- `:5.2` - Latest stable minor release
+- `:5.2.5` - Stable patch release
 
 ## Build
 
@@ -22,7 +28,7 @@ docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load 
 Build and push images:
 
 ```console
-docker buildx bake -f docker-bake.hcl build --pull --no-cache --push
+docker buildx bake -f docker-bake.hcl --pull --no-cache --push
 ```
 
 ## Testing
