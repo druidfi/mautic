@@ -29,6 +29,15 @@ docker buildx bake -f docker-bake.hcl build --pull --no-cache --push
 
 ```console
 docker compose up --wait
+docker compose exec -it -u www-data -w /var/www/html mautic-app php ./bin/console --ansi \
+    mautic:install --admin_firstname=Admin --admin_lastname=Administer \
+    --admin_email=admin@yourdomain.com \
+    --admin_username=admin \
+    --admin_password=adminpassu \
+    --db_host=mautic-db --db_port=3306 \
+    --db_user=mautic --db_password=mautic \
+    --db_name=mautic \
+    http://mautic-dxp.docker.so
 ```
 
-Open https://mautid-dxp.docker.so/
+Open https://mautic-dxp.docker.so/
