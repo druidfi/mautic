@@ -1,0 +1,14 @@
+{
+    "name": "druidfi/mautic",
+    "description": "Mautic Docker image with DruidXP branding",
+    "type": "metapackage",
+    "authors": [
+        {
+            "name": "Marko Korhonen",
+            "email": "marko.korhonen@druid.fi"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    }
+}

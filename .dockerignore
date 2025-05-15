@@ -2,6 +2,7 @@ mounts
 .dockerignore
 .gitignore
 compose.yaml
+composer.json
 docker-bake.hcl
 Dockerfile
 README.md
