@@ -16,11 +16,19 @@ docker buildx bake --print
 Build images locally:
 
 ```console
-docker buildx bake --pull --progress plain --no-cache --load --set '*.platform=linux/arm64'
+docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load --set '*.platform=linux/arm64'
 ```
 
 Build and push images:
 
 ```console
-docker buildx bake build --pull --no-cache --push
+docker buildx bake -f docker-bake.hcl build --pull --no-cache --push
 ```
+
+## Testing
+
+```console
+docker compose up --wait
+```
+
+Open https://mautid-dxp.docker.so/

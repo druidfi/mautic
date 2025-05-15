@@ -1,0 +1,90 @@
+x-mautic-volumes:
+  &mautic-volumes
+  - ${PROJECT_ROOT:-.}/mounts/config:/var/www/html/config:z
+  - ${PROJECT_ROOT:-.}/mounts/logs:/var/www/html/var/logs:z
+  - ${PROJECT_ROOT:-.}/mounts/media/files:/var/www/html/docroot/media/files:z
+  - ${PROJECT_ROOT:-.}/mounts/media/images:/var/www/html/docroot/media/images:z
+  - ${PROJECT_ROOT:-.}/mounts/cron:/opt/mautic/cron:z
+
+x-environment:
+  &mautic-environment-vars
+  MAUTIC_DB_HOST: mautic-db
+  MAUTIC_DB_PORT: 3306
+  MAUTIC_DB_DATABASE: &mautic-db mautic
+  MAUTIC_DB_USER: &mautic-db-user mautic
+  MAUTIC_DB_PASSWORD: &mautic-db-password ${MAUTIC_DB_PASS:-mautic}
+  MAUTIC_MESSENGER_DSN_EMAIL: "doctrine://default"
+  MAUTIC_MESSENGER_DSN_HIT: "doctrine://default"
+  DOCKER_MAUTIC_LOAD_TEST_DATA: false
+  DOCKER_MAUTIC_RUN_MIGRATIONS: false
+
+services:
+
+  mautic-app:
+    container_name: ${COMPOSE_PROJECT_NAME}-mautic
+    image: ${DOCKER_IMAGE}
+    restart: unless-stopped
+    volumes: *mautic-volumes
+    environment:
+      << : *mautic-environment-vars
+    healthcheck:
+      test: curl http://localhost
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 100
+    depends_on:
+      mautic-db:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.entrypoints=https
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.rule=Host(`${MAUTIC_HOSTNAME}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.tls=true
+    networks:
+      - default
+      - stonehenge-network
+
+  mautic-cron:
+    container_name: ${COMPOSE_PROJECT_NAME}-mautic-cron
+    image: ${DOCKER_IMAGE}
+    restart: unless-stopped
+    volumes: *mautic-volumes
+    environment:
+      DOCKER_MAUTIC_ROLE: mautic_cron
+      << : *mautic-environment-vars
+    depends_on:
+      mautic-app:
+        condition: service_healthy
+
+  mautic-worker:
+    container_name: ${COMPOSE_PROJECT_NAME}-mautic-worker
+    image: ${DOCKER_IMAGE}
+    restart: unless-stopped
+    volumes: *mautic-volumes
+    environment:
+      DOCKER_MAUTIC_ROLE: mautic_worker
+      << : *mautic-environment-vars
+    depends_on:
+      mautic-app:
+        condition: service_healthy
+
+  mautic-db:
+    container_name: ${COMPOSE_PROJECT_NAME}-mautic-db
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: *mautic-db-password
+      MYSQL_DATABASE: *mautic-db
+      MYSQL_USER: *mautic-db-user
+      MYSQL_PASSWORD: *mautic-db-password
+    ports:
+      - "3306"
+    healthcheck:
+      test: mysqladmin --user=mautic --password=$$MYSQL_PASSWORD ping
+      interval: 5s
+      timeout: 5s
+      retries: 3
+
+networks:
+  stonehenge-network:
+    external: true
