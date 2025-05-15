@@ -25,7 +25,7 @@ Build images locally:
 docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load --set '*.platform=linux/arm64'
 ```
 
-Build and push images:
+Build and push images (needs Docker Hub credentials):
 
 ```console
 docker buildx bake -f docker-bake.hcl --pull --no-cache --push
