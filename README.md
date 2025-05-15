@@ -2,8 +2,8 @@
 
 ## Variants
 
-- `druidfi/mautic` - Default image with no DXP brand
-- `druidfi/mautic-dxp` - DXP branded image
+- [druidfi/mautic](https://hub.docker.com/r/druidfi/mautic/tags) - Default image with no DXP brand
+- [druidfi/mautic-dxp](https://hub.docker.com/r/druidfi/mautic-dxp/tags) - DXP branded image
 
 ## Tagging
 
