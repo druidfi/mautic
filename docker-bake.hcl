@@ -31,13 +31,13 @@ target "mautic-5" {
   args = {
   }
   contexts = {
-    mautic_upstream = "docker-image://mautic/mautic:5.2.4-apache"
+    mautic_upstream = "docker-image://mautic/mautic:5.2.5-apache"
   }
   target = "mautic_base_5"
   tags = [
     "${REPO_BASE}:5",
     "${REPO_BASE}:5.2",
-    "${REPO_BASE}:5.2.4"
+    "${REPO_BASE}:5.2.5"
   ]
 }
 
@@ -47,6 +47,6 @@ target "mautic-5-dxp" {
   tags = [
     "${REPO_BASE}-dxp:5",
     "${REPO_BASE}-dxp:5.2",
-    "${REPO_BASE}-dxp:5.2.4"
+    "${REPO_BASE}-dxp:5.2.5"
   ]
 }
