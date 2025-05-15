@@ -1,0 +1,5 @@
+.dockerignore
+.gitignore
+docker-bake.hcl
+Dockerfile
+README.md
