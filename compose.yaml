@@ -20,6 +20,7 @@ x-environment:
   DOCKER_MAUTIC_LOAD_TEST_DATA: false
   DOCKER_MAUTIC_RUN_MIGRATIONS: false
   DRUPAL_HOSTNAME: drupal.org
+  APP_DEBUG: true
 
 services:
 
