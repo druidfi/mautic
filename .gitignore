@@ -1,3 +1,4 @@
 /.idea
 /mounts
+/vendor
 composer.lock

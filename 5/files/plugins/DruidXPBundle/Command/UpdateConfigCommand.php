@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MauticPlugin\CustomConfigUpdaterBundle\Command;
+namespace MauticPlugin\DruidXPBundle\Command;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +18,7 @@ class UpdateConfigCommand extends Command
 {
     protected static $defaultName = 'mautic:webhooks:replace';
 
-    public function __construct(private ContainerInterface $container)
+    public function __construct(private readonly ContainerInterface $container)
     {
         parent::__construct();
     }

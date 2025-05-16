@@ -48,3 +48,15 @@ docker compose exec -it -u www-data -w /var/www/html mautic-app php ./bin/consol
 ```
 
 Open https://mautic-dxp.docker.so/
+
+Open shell into Mautic container:
+
+```console
+docker compose exec -it -u www-data -w /var/www/html mautic-app /bin/bash
+```
+
+Run console:
+
+```console
+php bin/console
+```

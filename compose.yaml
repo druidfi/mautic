@@ -5,6 +5,8 @@ x-mautic-volumes:
   - ${PROJECT_ROOT:-.}/mounts/media/files:/var/www/html/docroot/media/files:z
   - ${PROJECT_ROOT:-.}/mounts/media/images:/var/www/html/docroot/media/images:z
   - ${PROJECT_ROOT:-.}/mounts/cron:/opt/mautic/cron:z
+  # Mount this plugin to Mautic containers for development
+  - ./5/files/plugins/DruidXPBundle:/var/www/html/docroot/plugins/DruidXPBundle
 
 x-environment:
   &mautic-environment-vars
@@ -17,6 +19,7 @@ x-environment:
   MAUTIC_MESSENGER_DSN_HIT: "doctrine://default"
   DOCKER_MAUTIC_LOAD_TEST_DATA: false
   DOCKER_MAUTIC_RUN_MIGRATIONS: false
+  DRUPAL_HOSTNAME: drupal.org
 
 services:
 
