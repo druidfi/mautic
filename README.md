@@ -16,7 +16,7 @@
 Print the build plan:
 
 ```console
-docker buildx bake --print
+docker buildx bake -f docker-bake.hcl --print
 ```
 
 Build images locally:
