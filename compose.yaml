@@ -75,7 +75,7 @@ services:
 
   mautic-db:
     container_name: ${COMPOSE_PROJECT_NAME}-mautic-db
-    image: mariadb:10.11
+    image: mariadb:12.0
     environment:
       MYSQL_ROOT_PASSWORD: *mautic-db-password
       MYSQL_DATABASE: *mautic-db
