@@ -9,7 +9,7 @@
 
 - `:5` - Latest stable release
 - `:5.2` - Latest stable minor release
-- `:5.2.5` - Stable patch release
+- `:5.2.9` - Stable patch release
 
 ## Build
 
