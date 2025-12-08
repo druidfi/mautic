@@ -31,13 +31,13 @@ target "mautic-5" {
   args = {
   }
   contexts = {
-    mautic_upstream = "docker-image://mautic/mautic:5.2.5-apache"
+    mautic_upstream = "docker-image://mautic/mautic:5.2.9-apache"
   }
   target = "mautic_base_5"
   tags = [
     "${REPO_BASE}:5",
     "${REPO_BASE}:5.2",
-    "${REPO_BASE}:5.2.5"
+    "${REPO_BASE}:5.2.9",
   ]
 }
 
@@ -47,7 +47,7 @@ target "mautic-5-dxp" {
   tags = [
     "${REPO_BASE}-dxp:5",
     "${REPO_BASE}-dxp:5.2",
-    "${REPO_BASE}-dxp:5.2.5"
+    "${REPO_BASE}-dxp:5.2.9",
   ]
 }
 
@@ -60,13 +60,13 @@ target "mautic-6" {
   args = {
   }
   contexts = {
-    mautic_upstream = "docker-image://mautic/mautic:6.0.1-apache"
+    mautic_upstream = "docker-image://mautic/mautic:6.0.7-apache"
   }
   target = "mautic_base_6"
   tags = [
     "${REPO_BASE}:6",
     "${REPO_BASE}:6.0",
-    "${REPO_BASE}:6.0.1"
+    "${REPO_BASE}:6.0.7"
   ]
 }
 
@@ -76,6 +76,6 @@ target "mautic-6-dxp" {
   tags = [
     "${REPO_BASE}-dxp:6",
     "${REPO_BASE}-dxp:6.0",
-    "${REPO_BASE}-dxp:6.0.1"
+    "${REPO_BASE}-dxp:6.0.7"
   ]
 }

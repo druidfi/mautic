@@ -4,6 +4,9 @@
     "config:recommended",
     "github>druidfi/renovate-config:global"
   ],
+  "baseBranchPatterns": [
+    "main"
+  ],
   "constraints": {
     "php": "8.1.*"
   },
