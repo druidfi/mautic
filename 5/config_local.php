@@ -8,3 +8,8 @@ $container->setParameter('mautic.db_port', getenv('MAUTIC_DB_PORT') ?? 3306);
 $container->setParameter('mautic.db_name', getenv('MAUTIC_DB_DATABASE') ?? 'mautic');
 $container->setParameter('mautic.db_user', getenv('MAUTIC_DB_USER') ?? 'mautic');
 $container->setParameter('mautic.db_password', getenv('MAUTIC_DB_PASSWORD') ?? 'mautic');
+
+$trusted_proxies = getenv('MAUTIC_TRUSTED_PROXIES') ?? '';
+$trusted_proxies = explode(',', $trusted_proxies);
+
+$container->setParameter('mautic.trusted_proxies', $trusted_proxies);

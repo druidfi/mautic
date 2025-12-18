@@ -28,7 +28,7 @@ docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load 
 Build and push images (needs Docker Hub credentials):
 
 ```console
-docker buildx create --use --platform linux/amd64,linux/arm64
+docker buildx create --use --name mautic-builder --platform linux/amd64,linux/arm64
 docker buildx bake -f docker-bake.hcl --pull --no-cache --push
 ```
 
