@@ -1,6 +1,6 @@
 x-mautic-volumes:
   &mautic-volumes
-  - ${PROJECT_ROOT:-.}/mounts/config:/var/www/html/config:z
+  - mautic_config:/var/www/html/config:z
   - ${PROJECT_ROOT:-.}/mounts/logs:/var/www/html/var/logs:z
   - ${PROJECT_ROOT:-.}/mounts/media/files:/var/www/html/docroot/media/files:z
   - ${PROJECT_ROOT:-.}/mounts/media/images:/var/www/html/docroot/media/images:z
@@ -10,11 +10,13 @@ x-mautic-volumes:
 
 x-environment:
   &mautic-environment-vars
+  MAUTIC_CONFIG_PARAMETERS: '{"site_url": "http://${MAUTIC_HOSTNAME}"}'
   MAUTIC_DB_HOST: mautic-db
   MAUTIC_DB_PORT: 3306
   MAUTIC_DB_DATABASE: &mautic-db mautic
   MAUTIC_DB_USER: &mautic-db-user mautic
   MAUTIC_DB_PASSWORD: &mautic-db-password ${MAUTIC_DB_PASS:-mautic}
+  MAUTIC_MAILER_DSN: smtp://stonehenge:1025
   MAUTIC_MESSENGER_DSN_EMAIL: "doctrine://default"
   MAUTIC_MESSENGER_DSN_HIT: "doctrine://default"
   DOCKER_MAUTIC_LOAD_TEST_DATA: false
@@ -47,7 +49,7 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.tls=true
     networks:
       - default
-      - stonehenge-network
+      - traefik-network
 
   mautic-cron:
     container_name: ${COMPOSE_PROJECT_NAME}-mautic-cron
@@ -90,5 +92,12 @@ services:
       retries: 3
 
 networks:
-  stonehenge-network:
+  default:
+    name: ${COMPOSE_PROJECT_NAME}
+  traefik-network:
     external: true
+    name: ${TRAEFIK_NETWORK:-traefik-network}
+
+volumes:
+  mautic_config:
+    name: ${COMPOSE_PROJECT_NAME}-mautic-config
