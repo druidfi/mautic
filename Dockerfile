@@ -4,7 +4,7 @@
 FROM mautic_upstream AS mautic_base_5
 
 #COPY --chown=www-data:www-data 5/config_local.php /var/www/html/config/
-#COPY --chown=www-data:www-data 5/parameters_local.php /var/www/html/config/
+COPY --chown=www-data:www-data 5/parameters_local.php /var/www/html/config/
 
 # DXP variant
 FROM mautic_base_5 AS mautic_dxp_5

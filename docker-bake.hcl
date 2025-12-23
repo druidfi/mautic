@@ -18,7 +18,7 @@ target "common" {
     "org.opencontainers.image.source" = "https://github.com/druidfi/mautic"
     "org.opencontainers.image.licenses" = "MIT"
     "org.opencontainers.image.vendor" = "Druid Oy"
-    "org.opencontainers.image.created" = "${timestamp()}"
+    "org.opencontainers.image.created" = timestamp()
   }
 }
 
@@ -37,7 +37,7 @@ target "mautic-5" {
   tags = [
     "${REPO_BASE}:5",
     "${REPO_BASE}:5.2",
-    "${REPO_BASE}:5.2.9"
+    "${REPO_BASE}:5.2.9",
   ]
 }
 
@@ -47,6 +47,6 @@ target "mautic-5-dxp" {
   tags = [
     "${REPO_BASE}-dxp:5",
     "${REPO_BASE}-dxp:5.2",
-    "${REPO_BASE}-dxp:5.2.9"
+    "${REPO_BASE}-dxp:5.2.9-1",
   ]
 }
