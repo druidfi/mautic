@@ -37,6 +37,8 @@ RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
 FROM mautic_base_5 AS mautic_dxp_5
 
 COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
+COPY --chown=www-data:www-data files/5/app /var/www/html/docroot/app
+
 COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/assets/images/
 
 #
