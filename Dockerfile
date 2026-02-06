@@ -47,4 +47,4 @@ COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/
 FROM mautic_base_7 AS mautic_dxp_7
 
 COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
-COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/assets/images/
+COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/bundles/CoreBundle/Assets/images/
