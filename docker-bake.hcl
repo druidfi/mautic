@@ -55,21 +55,6 @@ target "mautic-5-dxp" {
   ]
 }
 
-# target "mautic-6" {
-#     inherits = ["common"]
-#     args = {
-#     }
-#     contexts = {
-#         mautic_upstream = "docker-image://mautic/mautic:6.0.7-apache"
-#     }
-#     target = "mautic_base_7"
-#     tags = [
-#         "${REPO_BASE}:6",
-#         "${REPO_BASE}:6.0",
-#         "${REPO_BASE}:6.0.7",
-#     ]
-# }
-
 target "mautic-7" {
     inherits = ["common"]
     args = {
