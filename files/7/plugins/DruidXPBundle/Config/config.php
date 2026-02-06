@@ -12,7 +12,7 @@ return [
             'items'    => [
                 'druidxp.drupal.link' => [
                     'label'     => 'Manage Content',
-                    'iconClass' => 'fa-drupal',
+                    'iconClass' => 'ri-file-edit-fill',
                     'access'    => 'admin',
                     'route'     => 'druidxp.drupal.link',
                     'linkAttributes' => [
