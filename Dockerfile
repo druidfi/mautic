@@ -4,6 +4,10 @@ FROM mautic_upstream AS base
 
 RUN apt-get update && apt-get install -y libavif15 libxpm4 libwebp7 && rm -rf /var/lib/apt/lists/*
 
+RUN rm -rf /var/www/html/var && \
+    mkdir -p /var/www/html/var && \
+    chown -R www-data:www-data /var/www/html/var
+
 # Copy Apache conf
 COPY files/000-default.conf /etc/apache2/sites-available/000-default.conf
 
@@ -33,8 +37,6 @@ FROM mautic_base_5 AS mautic_dxp_5
 COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
 COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/assets/images/
 
-RUN chown -R www-data:www-data /var/www/html/var
-
 #
 # DXP variant v7
 #
@@ -42,5 +44,3 @@ FROM mautic_base_7 AS mautic_dxp_7
 
 COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
 COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/assets/images/
-
-RUN chown -R www-data:www-data /var/www/html/var
