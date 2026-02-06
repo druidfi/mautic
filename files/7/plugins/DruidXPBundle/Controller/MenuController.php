@@ -5,15 +5,10 @@ namespace MauticPlugin\DruidXPBundle\Controller;
 use Mautic\CoreBundle\Controller\CommonController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-/**
- * Class MenuController.
- */
-class MenuController extends CommonController {
-
+class MenuController extends CommonController
+{
     /**
      * Redirects to the Drupal site.
-     *
-     * @return RedirectResponse
      */
     public function __invoke(): RedirectResponse
     {
@@ -21,5 +16,4 @@ class MenuController extends CommonController {
 
         return new RedirectResponse($drupalUrl);
     }
-
 }

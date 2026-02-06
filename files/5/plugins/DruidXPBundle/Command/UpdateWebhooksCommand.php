@@ -6,19 +6,20 @@ namespace MauticPlugin\DruidXPBundle\Command;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: 'mautic:webhooks:replace',
-    description: 'Updates Mautic webhook URLs in the database',
-)]
+/**
+ * Command for updating webhook URLs in the Mautic database.
+ */
 class UpdateWebhooksCommand extends Command
 {
+    protected static $defaultName = 'mautic:webhooks:replace';
+
+    // Batch size for processing webhooks
     private const BATCH_SIZE = 100;
 
     public function __construct(private readonly Connection $connection)
@@ -29,6 +30,7 @@ class UpdateWebhooksCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setDescription('Updates Mautic webhook URLs in the database')
             ->setHelp('This command updates webhook URLs in the database, replacing old base URL with a new one')
             ->addOption(
                 'source-url',
@@ -90,52 +92,52 @@ class UpdateWebhooksCommand extends Command
         $webhooksTable = $tablePrefix . 'webhooks';
         $updatedCount = 0;
         $totalCount = 0;
-        
+
         // Get total count of webhooks for progress display
         $totalWebhooks = (int) $this->connection->fetchOne("SELECT COUNT(id) FROM {$webhooksTable}");
-        
+
         if ($totalWebhooks === 0) {
             $io->warning('No webhooks found in the database.');
             return Command::SUCCESS;
         }
-        
+
         $io->title('Webhook URL Update');
         $io->text([
             sprintf('Source URL: <comment>%s</comment>', $sourceUrl),
             sprintf('Target URL: <comment>%s</comment>', $targetUrl),
             sprintf('Dry Run: <comment>%s</comment>', $dryRun ? 'Yes' : 'No'),
         ]);
-        
+
         $io->progressStart($totalWebhooks);
-        
+
         // Process webhooks in batches to avoid memory issues with large datasets
         $offset = 0;
-        
+
         while (true) {
             // Use prepared statement for better security
             $stmt = $this->connection->prepare("SELECT id, webhook_url FROM {$webhooksTable} ORDER BY id LIMIT :limit OFFSET :offset");
             $stmt->bindValue('limit', self::BATCH_SIZE, \PDO::PARAM_INT);
             $stmt->bindValue('offset', $offset, \PDO::PARAM_INT);
             $webhooks = $stmt->executeQuery()->fetchAllAssociative();
-            
+
             if (empty($webhooks)) {
                 break;
             }
-            
+
             foreach ($webhooks as $webhook) {
                 $io->progressAdvance();
                 $totalCount++;
-                
+
                 if (str_starts_with($webhook['webhook_url'], $sourceUrl)) {
                     $newUrl = str_replace($sourceUrl, $targetUrl, $webhook['webhook_url']);
-                    
+
                     // Store changes for summary report
                     $changes[] = [
                         'id' => $webhook['id'],
                         'old_url' => $webhook['webhook_url'],
                         'new_url' => $newUrl,
                     ];
-                    
+
                     if (!$dryRun) {
                         // Use prepared statement for the update
                         $this->connection->executeStatement(
@@ -146,17 +148,17 @@ class UpdateWebhooksCommand extends Command
                     }
                 }
             }
-            
+
             $offset += self::BATCH_SIZE;
         }
-        
+
         $io->progressFinish();
-        
+
         // Display summary of changes
         if (!empty($changes)) {
             $io->section('Changes Summary');
             $rows = [];
-            
+
             foreach ($changes as $change) {
                 $rows[] = [
                     $change['id'],
@@ -164,16 +166,16 @@ class UpdateWebhooksCommand extends Command
                     $change['new_url'],
                 ];
             }
-            
+
             $io->table(['ID', 'Old URL', 'New URL'], $rows);
         }
-        
+
         if ($dryRun) {
             $io->warning(sprintf('DRY RUN - Found %d webhooks that would be updated.', count($changes ?? [])));
         } else {
             $io->success(sprintf('Successfully updated %d webhook(s) out of %d total.', $updatedCount, $totalCount));
         }
-        
+
         return Command::SUCCESS;
     }
 }

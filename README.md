@@ -10,6 +10,9 @@
 - `:5` - Latest stable release
 - `:5.2` - Latest stable minor release
 - `:5.2.9` - Stable patch release
+- `:7` - Latest stable release
+- `:7.0` - Latest stable minor release
+- `:7.0.0` - Stable patch release
 
 ## Build
 
@@ -37,12 +40,12 @@ docker buildx bake -f docker-bake.hcl --pull --no-cache --push
 
 ```console
 docker compose up --wait
-docker compose exec -it -u www-data -w /var/www/html mautic-app php ./bin/console --ansi \
+docker compose exec -it -u www-data -w /var/www/html mautic-web php ./bin/console --ansi \
     mautic:install --force --admin_firstname=Admin --admin_lastname=Administer \
     --admin_email=admin@yourdomain.com \
     --admin_username=admin \
     --admin_password=adminpassu \
-    http://mautic-dxp.docker.so
+    https://mautic-dxp.docker.so
 ```
 
 Open https://mautic-dxp.docker.so/
@@ -50,7 +53,7 @@ Open https://mautic-dxp.docker.so/
 Open shell into Mautic container:
 
 ```console
-docker compose exec -it -u www-data -w /var/www/html mautic-app /bin/bash
+docker compose exec -it -u www-data -w /var/www/html mautic-web /bin/bash
 ```
 
 Run console:

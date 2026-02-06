@@ -1,0 +1,12 @@
+{
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "mautic/core-lib": "5.2.0"
+    },
+    "config": {
+        "audit": {
+            "block-insecure": false
+        }
+    }
+}

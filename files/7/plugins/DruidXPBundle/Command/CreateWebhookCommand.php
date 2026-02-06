@@ -20,7 +20,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateWebhookCommand extends Command
 {
-
     public function __construct(private readonly EntityManagerInterface $em)
     {
         parent::__construct();
