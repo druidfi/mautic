@@ -1,15 +1,16 @@
-x-mautic-volumes:
-  &mautic-volumes
-  - mautic_config:/var/www/html/config
+x-mautic-volumes: &mautic-volumes
+  #- mautic_config:/var/www/html/config
   - ${PROJECT_ROOT:-.}/mounts/logs:/var/www/html/var/logs:z
-  - ${PROJECT_ROOT:-.}/mounts/media/files:/var/www/html/docroot/media/files:z
-  - ${PROJECT_ROOT:-.}/mounts/media/images:/var/www/html/docroot/media/images:z
-  - ${PROJECT_ROOT:-.}/mounts/cron:/opt/mautic/cron:z
+  #- ${PROJECT_ROOT:-.}/mounts/media/files:/var/www/html/docroot/media/files:z
+  #- ${PROJECT_ROOT:-.}/mounts/media/images:/var/www/html/docroot/media/images:z
+  #- ${PROJECT_ROOT:-.}/mounts/cron:/opt/mautic/cron:z
   # Mount this plugin to Mautic containers for development
-  - ./5/files/plugins/DruidXPBundle:/var/www/html/docroot/plugins/DruidXPBundle
+  #- ./files/7/plugins/DruidXPBundle:/var/www/html/docroot/plugins/DruidXPBundle
+  - ./files/entrypoint_mautic_web.sh:/entrypoint_mautic_web.sh
+  - ./files/000-default.conf:/etc/apache2/sites-available/000-default.conf
 
-x-environment:
-  &mautic-environment-vars
+x-environment: &mautic-environment-vars
+  MAUTIC_DEBUG_MODE: 1 # More verbose logging
   MAUTIC_API_ENABLED: true
   MAUTIC_API_ENABLE_BASIC_AUTH: true
   MAUTIC_CORS_RESTRICT_DOMAINS: true
@@ -19,23 +20,38 @@ x-environment:
   MAUTIC_DB_DATABASE: &mautic-db mautic
   MAUTIC_DB_USER: &mautic-db-user mautic
   MAUTIC_DB_PASSWORD: &mautic-db-password ${MAUTIC_DB_PASS:-mautic}
+  MAUTIC_DB_SERVER_VERSION: 10.11.15-MariaDB
   MAUTIC_DEFAULT_TIMEZONE: Europe/Helsinki
   MAUTIC_MAILER_DSN: smtp://stonehenge:1025
   MAUTIC_MESSENGER_DSN_EMAIL: "doctrine://default"
   MAUTIC_MESSENGER_DSN_HIT: "doctrine://default"
-  MAUTIC_SITE_URL: http://${MAUTIC_HOSTNAME}
-  MAUTIC_TRUSTED_PROXIES: '["127.0.0.1", "REMOTE_ADDR"]'
+  MAUTIC_SITE_URL: https://${MAUTIC_HOSTNAME}
+  MAUTIC_TRUSTED_HOSTS: '["localhost", "${MAUTIC_HOSTNAME}"]'
+  # These are Docker networks
+  MAUTIC_TRUSTED_PROXIES: '["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]'
+  # SAML
+  MAUTIC_SAML_IDP_EMAIL_ATTRIBUTE: email
+  MAUTIC_SAML_IDP_FIRSTNAME_ATTRIBUTE: firstname
+  MAUTIC_SAML_IDP_LASTNAME_ATTRIBUTE: lastname
+  MAUTIC_SAML_IDP_DEFAULT_ROLE: Administrator
   DOCKER_MAUTIC_LOAD_TEST_DATA: false
   DOCKER_MAUTIC_RUN_MIGRATIONS: false
+  # Link for DruidXPBundle
   DRUPAL_HOSTNAME: drupal.org
-  APP_DEBUG: true
-  MAUTIC_DEBUG: true
+  # Mautic Docker debug
+  DEBUG: true
+  # Install Mautic if database is empty
+  MAUTIC_AUTO_INSTALL: true
 
 services:
 
-  mautic-app:
-    container_name: ${COMPOSE_PROJECT_NAME}-mautic
-    image: ${DOCKER_IMAGE}
+  mautic-web:
+    container_name: ${COMPOSE_PROJECT_NAME}-mautic-web
+    image: druidfi/mautic-dxp:dev
+    build:
+      context: .
+      target: mautic_local
+      dockerfile: Dockerfile.local
     restart: unless-stopped
     volumes: *mautic-volumes
     environment:
@@ -54,33 +70,34 @@ services:
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.entrypoints=https
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.rule=Host(`${MAUTIC_HOSTNAME}`)
       - traefik.http.routers.${COMPOSE_PROJECT_NAME}-mautic.tls=true
+      - traefik.http.routers.mautic.middlewares=mautic-headers
     networks:
       - default
       - traefik-network
 
-  mautic-cron:
-    container_name: ${COMPOSE_PROJECT_NAME}-mautic-cron
-    image: ${DOCKER_IMAGE}
-    restart: unless-stopped
-    volumes: *mautic-volumes
-    environment:
-      DOCKER_MAUTIC_ROLE: mautic_cron
-      << : *mautic-environment-vars
-    depends_on:
-      mautic-app:
-        condition: service_healthy
-
-  mautic-worker:
-    container_name: ${COMPOSE_PROJECT_NAME}-mautic-worker
-    image: ${DOCKER_IMAGE}
-    restart: unless-stopped
-    volumes: *mautic-volumes
-    environment:
-      DOCKER_MAUTIC_ROLE: mautic_worker
-      << : *mautic-environment-vars
-    depends_on:
-      mautic-app:
-        condition: service_healthy
+#  mautic-cron:
+#    container_name: ${COMPOSE_PROJECT_NAME}-mautic-cron
+#    image: druidfi/mautic-dxp:dev
+#    restart: unless-stopped
+#    volumes: *mautic-volumes
+#    environment:
+#      DOCKER_MAUTIC_ROLE: mautic_cron
+#      << : *mautic-environment-vars
+#    depends_on:
+#      mautic-web:
+#        condition: service_healthy
+#
+#  mautic-worker:
+#    container_name: ${COMPOSE_PROJECT_NAME}-mautic-worker
+#    image: druidfi/mautic-dxp:dev
+#    restart: unless-stopped
+#    volumes: *mautic-volumes
+#    environment:
+#      DOCKER_MAUTIC_ROLE: mautic_worker
+#      << : *mautic-environment-vars
+#    depends_on:
+#      mautic-web:
+#        condition: service_healthy
 
   mautic-db:
     container_name: ${COMPOSE_PROJECT_NAME}-mautic-db
