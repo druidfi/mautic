@@ -2,7 +2,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "mautic/core-lib": "5.2.0"
+        "mautic/core-lib": "5.2.9"
     },
     "config": {
         "audit": {
