@@ -10,17 +10,20 @@ x-mautic-volumes: &mautic-volumes
   - ./files/000-default.conf:/etc/apache2/sites-available/000-default.conf
 
 x-environment: &mautic-environment-vars
-  MAUTIC_DEBUG_MODE: 1 # More verbose logging
+  # API
   MAUTIC_API_ENABLED: true
   MAUTIC_API_ENABLE_BASIC_AUTH: true
+  # CORS
   MAUTIC_CORS_RESTRICT_DOMAINS: true
   MAUTIC_CORS_VALID_DOMAINS: '["https:/drupal.org"]'
+  # Database
   MAUTIC_DB_HOST: mautic-db
   MAUTIC_DB_PORT: 3306
   MAUTIC_DB_DATABASE: &mautic-db mautic
   MAUTIC_DB_USER: &mautic-db-user mautic
   MAUTIC_DB_PASSWORD: &mautic-db-password ${MAUTIC_DB_PASS:-mautic}
   MAUTIC_DB_SERVER_VERSION: 10.11.15-MariaDB
+  # Misc
   MAUTIC_DEFAULT_TIMEZONE: Europe/Helsinki
   MAUTIC_MAILER_DSN: smtp://stonehenge:1025
   MAUTIC_MESSENGER_DSN_EMAIL: "doctrine://default"
@@ -29,17 +32,19 @@ x-environment: &mautic-environment-vars
   MAUTIC_TRUSTED_HOSTS: '["localhost", "${MAUTIC_HOSTNAME}"]'
   # These are Docker networks
   MAUTIC_TRUSTED_PROXIES: '["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]'
+  # Webhooks
+  MAUTIC_WEBHOOK_ALLOW_INTERNAL_ADDRESSES: false
+  MAUTIC_WEBHOOK_ALLOWED_PRIVATE_ADDRESSES: '[]'
   # SAML
   MAUTIC_SAML_IDP_EMAIL_ATTRIBUTE: email
   MAUTIC_SAML_IDP_FIRSTNAME_ATTRIBUTE: firstname
   MAUTIC_SAML_IDP_LASTNAME_ATTRIBUTE: lastname
   MAUTIC_SAML_IDP_DEFAULT_ROLE: Administrator
-  DOCKER_MAUTIC_LOAD_TEST_DATA: false
-  DOCKER_MAUTIC_RUN_MIGRATIONS: false
   # Link for DruidXPBundle
   DRUPAL_HOSTNAME: drupal.org
-  # Mautic Docker debug
-  DEBUG: true
+  # Debug
+  MAUTIC_DEBUG_MODE: 1 # More verbose logging
+  DEBUG: true # Mautic Docker debug
   # Install Mautic if database is empty
   MAUTIC_AUTO_INSTALL: true
 

@@ -13,6 +13,9 @@ RUN rm -rf /var/www/html/var && \
 # Copy Apache conf
 COPY files/000-default.conf /etc/apache2/sites-available/000-default.conf
 
+# Copy custom web entrypoint with auto install
+COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
+
 #
 # Base Mautic image v5
 #
