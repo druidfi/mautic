@@ -20,6 +20,9 @@ COPY files/000-default.conf /etc/apache2/sites-available/000-default.conf
 # Copy custom web entrypoint with auto install
 COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
 
+# Copy custom supervisord configuration
+COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 #
 # Base Mautic image v5
 #
