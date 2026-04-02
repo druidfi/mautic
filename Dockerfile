@@ -2,6 +2,10 @@
 
 FROM mautic_upstream AS base
 
+# Worker defaults (can be overridden via environment variables)
+ENV DOCKER_MAUTIC_WORKER_MEMORY_LIMIT=128M \
+    DOCKER_MAUTIC_WORKER_TIME_LIMIT=3600
+
 # Fix base image PHP errors
 RUN apt-get update && apt-get install -y libavif15 libxpm4 libwebp7 && rm -rf /var/lib/apt/lists/*
 
