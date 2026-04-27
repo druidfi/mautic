@@ -11,8 +11,8 @@
 - `:5.2` - Latest stable minor release
 - `:5.2.9` - Stable patch release
 - `:7` - Latest stable release
-- `:7.0` - Latest stable minor release
-- `:7.0.2` - Stable patch release
+- `:7.1` - Latest stable minor release
+- `:7.1.0` - Stable patch release
 
 ## Build
 
