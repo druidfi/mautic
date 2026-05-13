@@ -23,6 +23,10 @@ COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
 # Copy custom supervisord configuration
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+
+# Install third-party plugins via Composer
+RUN cd /var/www/html/docroot && composer require firemultimedia/mautic-multi-captcha-bundle --no-interaction
+
 #
 # Base Mautic image v5
 #
@@ -32,6 +36,11 @@ FROM base AS mautic_base_5
 COPY --chown=www-data:www-data files/5/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
 RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
 
+# Clear cache and register all plugins
+RUN cd /var/www/html/docroot && \
+    php bin/console cache:clear && \
+    php bin/console mautic:plugins:install
+
 #
 # Base Mautic image v7
 #
@@ -40,6 +49,11 @@ FROM base AS mautic_base_7
 # Copy plugins
 COPY --chown=www-data:www-data files/7/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
 RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
+
+# Clear cache and register all plugins
+RUN cd /var/www/html/docroot && \
+    php bin/console cache:clear && \
+    php bin/console mautic:plugins:install
 
 #
 # DXP variant v5
