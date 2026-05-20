@@ -23,6 +23,22 @@ COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
 # Copy custom supervisord configuration
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+WORKDIR /var/www/html
+
+# Do HOTFIX updates with Composer
+RUN composer update --no-interaction --no-progress \
+    symfony/cache \
+    symfony/http-kernel \
+    symfony/mailer \
+    symfony/mime \
+    symfony/monolog-bridge \
+    symfony/routing \
+    symfony/security-http \
+    symfony/yaml \
+    twig/twig
+
+RUN composer audit --abandoned=ignore
+
 #
 # Base Mautic image v5
 #
