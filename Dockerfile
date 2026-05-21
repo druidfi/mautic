@@ -9,11 +9,6 @@ ENV DOCKER_MAUTIC_WORKER_MEMORY_LIMIT=128M \
 # Fix base image PHP errors
 RUN apt-get update && apt-get install -y libavif15 libxpm4 libwebp7 && rm -rf /var/lib/apt/lists/*
 
-# Make sure var folder is empty
-RUN rm -rf /var/www/html/var && \
-    mkdir -p /var/www/html/var && \
-    chown -R www-data:www-data /var/www/html/var
-
 # Copy Apache conf
 COPY files/000-default.conf /etc/apache2/sites-available/000-default.conf
 
@@ -22,6 +17,28 @@ COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
 
 # Copy custom supervisord configuration
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+WORKDIR /var/www/html
+
+# Do HOTFIX updates with Composer
+RUN composer update --no-interaction --no-progress \
+    symfony/cache \
+    symfony/http-kernel \
+    symfony/mailer \
+    symfony/mime \
+    symfony/monolog-bridge \
+    symfony/routing \
+    symfony/security-http \
+    symfony/yaml \
+    twig/twig
+
+RUN composer audit --abandoned=ignore
+
+# NOTE: This must be last step
+# Make sure var folder is empty
+RUN rm -rf /var/www/html/var && \
+    mkdir -p /var/www/html/var && \
+    chown -R www-data:www-data /var/www/html/var
 
 #
 # Base Mautic image v5
