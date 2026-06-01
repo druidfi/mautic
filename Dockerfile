@@ -23,10 +23,12 @@ WORKDIR /var/www/html
 # Do HOTFIX updates with Composer
 RUN composer update --no-interaction --no-progress \
     symfony/cache \
+    symfony/http-client \
     symfony/http-kernel \
     symfony/mailer \
     symfony/mime \
     symfony/monolog-bridge \
+    symfony/polyfill-intl-idn \
     symfony/routing \
     symfony/security-http \
     symfony/yaml \
