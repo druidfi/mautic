@@ -21,7 +21,7 @@ COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 WORKDIR /var/www/html
 
 # Do HOTFIX updates with Composer
-RUN composer update --no-interaction --no-progress \
+RUN composer update --no-interaction --no-progress --no-scripts \
     symfony/cache \
     symfony/http-client \
     symfony/http-kernel \
@@ -34,13 +34,17 @@ RUN composer update --no-interaction --no-progress \
     symfony/yaml \
     twig/twig
 
+# Install third-party plugins via Composer
+RUN composer require --no-interaction --no-progress --no-scripts \
+    firemultimedia/mautic-multi-captcha-bundle
+
 RUN composer audit --abandoned=ignore
 
 # NOTE: This must be last step
 # Make sure var folder is empty
 RUN rm -rf /var/www/html/var && \
     mkdir -p /var/www/html/var && \
-    chown -R www-data:www-data /var/www/html/var
+    chown -R www-data:www-data /var/www/html/var /var/www/html/docroot/plugins
 
 #
 # Base Mautic image v5
