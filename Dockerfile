@@ -9,11 +9,6 @@ ENV DOCKER_MAUTIC_WORKER_MEMORY_LIMIT=128M \
 # Fix base image PHP errors
 RUN apt-get update && apt-get install -y libavif15 libxpm4 libwebp7 && rm -rf /var/lib/apt/lists/*
 
-# Make sure var folder is empty
-RUN rm -rf /var/www/html/var && \
-    mkdir -p /var/www/html/var && \
-    chown -R www-data:www-data /var/www/html/var
-
 # Copy Apache conf
 COPY files/000-default.conf /etc/apache2/sites-available/000-default.conf
 
