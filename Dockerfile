@@ -23,9 +23,33 @@ COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
 # Copy custom supervisord configuration
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+WORKDIR /var/www/html
+
+# Do HOTFIX updates with Composer
+RUN composer update --no-interaction --no-progress --no-scripts \
+    symfony/cache \
+    symfony/http-client \
+    symfony/http-kernel \
+    symfony/mailer \
+    symfony/mime \
+    symfony/monolog-bridge \
+    symfony/polyfill-intl-idn \
+    symfony/routing \
+    symfony/security-http \
+    symfony/yaml \
+    twig/twig
 
 # Install third-party plugins via Composer
-RUN cd /var/www/html && composer require firemultimedia/mautic-multi-captcha-bundle --no-interaction
+RUN composer require --no-interaction --no-progress --no-scripts \
+    firemultimedia/mautic-multi-captcha-bundle
+
+RUN composer audit --abandoned=ignore
+
+# NOTE: This must be last step
+# Make sure var folder is empty
+RUN rm -rf /var/www/html/var && \
+    mkdir -p /var/www/html/var && \
+    chown -R www-data:www-data /var/www/html/var /var/www/html/docroot/plugins
 
 #
 # Base Mautic image v5
@@ -36,10 +60,6 @@ FROM base AS mautic_base_5
 COPY --chown=www-data:www-data files/5/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
 RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
 
-# Clear cache and register all plugins
-RUN cd /var/www/html && \
-    php bin/console cache:clear
-
 #
 # Base Mautic image v7
 #
@@ -48,10 +68,6 @@ FROM base AS mautic_base_7
 # Copy plugins
 COPY --chown=www-data:www-data files/7/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
 RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
-
-# Clear cache and register all plugins
-RUN cd /var/www/html && \
-    php bin/console cache:clear
 
 #
 # DXP variant v5
