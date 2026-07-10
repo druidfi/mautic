@@ -32,13 +32,21 @@ RUN composer update --no-interaction --no-progress --no-scripts \
     symfony/routing \
     symfony/security-http \
     symfony/yaml \
-    twig/twig
+    twig/twig \
+    guzzlehttp/guzzle \
+    guzzlehttp/psr7 \
+    mtdowling/jmespath.php \
+    phpseclib/phpseclib
 
 # Install third-party plugins via Composer
 RUN composer require --no-interaction --no-progress --no-scripts \
     firemultimedia/mautic-multi-captcha-bundle
 
-RUN composer audit --abandoned=ignore
+# guzzlehttp/guzzle CVE-2026-55767 and CVE-2026-55568 are fixed only in >=7.12.1, but
+# mautic/core-lib pins guzzlehttp/guzzle to ~7.10.0 — nothing we can bump without
+# conflicting with Mautic's own dependency constraints. Ignore until Mautic relaxes it.
+RUN composer config --json audit.ignore '["CVE-2026-55767", "CVE-2026-55568"]' && \
+    composer audit --abandoned=ignore
 
 # NOTE: This must be last step
 # Make sure var folder is empty
