@@ -20,6 +20,8 @@ COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /var/www/html
 
+# twig/twig pinned <3.28: 3.28.0 breaks Mautic core's OverrideIncludeExtension::includeWithEvent()
+# (strict `: string` return type, Twig\Markup returned) -> TypeError on every page render.
 # Do HOTFIX updates with Composer
 RUN composer update --no-interaction --no-progress --no-scripts \
     symfony/cache \
@@ -32,7 +34,7 @@ RUN composer update --no-interaction --no-progress --no-scripts \
     symfony/routing \
     symfony/security-http \
     symfony/yaml \
-    twig/twig \
+    twig/twig:3.27.1 \
     guzzlehttp/guzzle \
     guzzlehttp/psr7 \
     mtdowling/jmespath.php \
