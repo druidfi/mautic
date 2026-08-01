@@ -38,16 +38,17 @@ RUN composer update --no-interaction --no-progress --no-scripts \
     guzzlehttp/guzzle \
     guzzlehttp/psr7 \
     mtdowling/jmespath.php \
-    phpseclib/phpseclib
+    phpseclib/phpseclib \
+    phpoffice/phpspreadsheet:5.9.0
 
 # Install third-party plugins via Composer
 RUN composer require --no-interaction --no-progress --no-scripts \
     firemultimedia/mautic-multi-captcha-bundle
 
-# guzzlehttp/guzzle CVE-2026-55767 and CVE-2026-55568 are fixed only in >=7.12.1, but
+# guzzlehttp/guzzle advisories below are fixed only in >=7.12.1/7.12.3/7.14.2/7.15.1, but
 # mautic/core-lib pins guzzlehttp/guzzle to ~7.10.0 — nothing we can bump without
 # conflicting with Mautic's own dependency constraints. Ignore until Mautic relaxes it.
-RUN composer config --json audit.ignore '["CVE-2026-55767", "CVE-2026-55568"]' && \
+RUN composer config --json audit.ignore '["PKSA-fy2t-3c5f-827y", "PKSA-qxvb-2bpp-dnk6", "PKSA-bbs6-q5q9-f3t4", "PKSA-bcdd-5xc7-gwfb", "PKSA-pwsk-hy21-4gby", "CVE-2026-55767", "CVE-2026-55568"]' && \
     composer audit --abandoned=ignore
 
 # NOTE: This must be last step
