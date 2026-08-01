@@ -57,37 +57,18 @@ RUN rm -rf /var/www/html/var && \
     chown -R www-data:www-data /var/www/html/var /var/www/html/docroot/plugins
 
 #
-# Base Mautic image v5
+# Base Mautic image v7.1
 #
-FROM base AS mautic_base_5
-
-# Copy plugins
-COPY --chown=www-data:www-data files/5/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
-RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
-
-#
-# Base Mautic image v7
-#
-FROM base AS mautic_base_7
+FROM base AS mautic_base_71
 
 # Copy plugins
 COPY --chown=www-data:www-data files/7/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
 RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
 
 #
-# DXP variant v5
+# DXP variant v7.1
 #
-FROM mautic_base_5 AS mautic_dxp_5
-
-COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
-COPY --chown=www-data:www-data files/5/app /var/www/html/docroot/app
-
-COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/assets/images/
-
-#
-# DXP variant v7
-#
-FROM mautic_base_7 AS mautic_dxp_7
+FROM mautic_base_71 AS mautic_dxp_71
 
 COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
 COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/bundles/CoreBundle/Assets/images/

@@ -8,22 +8,11 @@
     "main"
   ],
   "constraints": {
-    "php": "8.1.*"
+    "php": "8.3.*"
   },
   "enabled": true,
   "ignoreDeps": ["mautic/core-lib"],
   "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^docker-bake\\.hcl$/"],
-      "matchStrings": [
-        "(?:docker-image://mautic/mautic:|\\$\\{REPO_BASE\\}(?:-dxp)?:)(?<currentValue>5\\.\\d+\\.\\d+)(?:-apache)?"
-      ],
-      "depNameTemplate": "mautic/mautic-5-bake",
-      "packageNameTemplate": "mautic/mautic",
-      "datasourceTemplate": "docker",
-      "versioningTemplate": "docker"
-    },
     {
       "customType": "regex",
       "managerFilePatterns": ["/^docker-bake\\.hcl$/"],
@@ -37,12 +26,6 @@
     }
   ],
   "packageRules": [
-    {
-      "matchDepNames": ["mautic/mautic-5-bake"],
-      "allowedVersions": "/^5\\./",
-      "groupName": "Mautic 5 upstream image",
-      "labels": ["docker", "mautic"]
-    },
     {
       "matchDepNames": ["mautic/mautic-7-bake"],
       "allowedVersions": "/^7\\./",

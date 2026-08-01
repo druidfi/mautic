@@ -7,9 +7,6 @@
 
 ## Tagging
 
-- `:5` - Latest stable release
-- `:5.2` - Latest stable minor release
-- `:5.2.11` - Stable patch release
 - `:7` - Latest stable release
 - `:7.1` - Latest stable minor release
 - `:7.1.3` - Stable patch release

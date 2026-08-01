@@ -8,10 +8,8 @@ group "default" {
 
 group "mautic-variants" {
   targets = [
-      "mautic-5",
-      "mautic-5-dxp",
-      "mautic-7",
-      "mautic-7-dxp",
+      "mautic-71",
+      "mautic-71-dxp",
   ]
 }
 
@@ -30,39 +28,14 @@ target "common" {
 # MAUTIC
 #
 
-target "mautic-5" {
-  inherits = ["common"]
-  args = {
-  }
-  contexts = {
-    mautic_upstream = "docker-image://mautic/mautic:5.2.11-apache"
-  }
-  target = "mautic_base_5"
-  tags = [
-    "${REPO_BASE}:5",
-    "${REPO_BASE}:5.2",
-    "${REPO_BASE}:5.2.11",
-  ]
-}
-
-target "mautic-5-dxp" {
-  inherits = ["mautic-5"]
-  target = "mautic_dxp_5"
-  tags = [
-    "${REPO_BASE}-dxp:5",
-    "${REPO_BASE}-dxp:5.2",
-    "${REPO_BASE}-dxp:5.2.11",
-  ]
-}
-
-target "mautic-7" {
+target "mautic-71" {
     inherits = ["common"]
     args = {
     }
     contexts = {
         mautic_upstream = "docker-image://mautic/mautic:7.1.3-apache"
     }
-    target = "mautic_base_7"
+    target = "mautic_base_71"
     tags = [
         "${REPO_BASE}:7",
         "${REPO_BASE}:7.1",
@@ -70,9 +43,9 @@ target "mautic-7" {
     ]
 }
 
-target "mautic-7-dxp" {
-    inherits = ["mautic-7"]
-    target = "mautic_dxp_7"
+target "mautic-71-dxp" {
+    inherits = ["mautic-71"]
+    target = "mautic_dxp_71"
     tags = [
         "${REPO_BASE}-dxp:7",
         "${REPO_BASE}-dxp:7.1",
