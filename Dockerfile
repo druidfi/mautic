@@ -39,7 +39,8 @@ RUN composer update --no-interaction --no-progress --no-scripts \
     guzzlehttp/psr7 \
     mtdowling/jmespath.php \
     phpseclib/phpseclib \
-    phpoffice/phpspreadsheet:5.9.0
+    phpoffice/phpspreadsheet:5.9.0 \
+    studio-42/elfinder:2.1.70
 
 # Install third-party plugins via Composer
 RUN composer require --no-interaction --no-progress --no-scripts \

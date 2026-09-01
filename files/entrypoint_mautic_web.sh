@@ -2,6 +2,43 @@
 
 source /startup/logger.sh
 
+# Force the DB connection to always come from env vars, regardless of what
+# was last saved via the Mautic UI (Configuration > System Settings rewrites
+# local.php wholesale, baking in whatever host/creds were resolved at save
+# time). parameters_local.php is a separate file Mautic's Configurator
+# service never reads or writes, and ParameterLoader merges it on top of
+# local.php, so this always wins without touching the UI-managed file.
+sync_db_config() {
+  if [ -z "${MAUTIC_DB_HOST}" ]; then
+    log "[${DOCKER_MAUTIC_ROLE}]: MAUTIC_DB_HOST not set, skipping DB config sync."
+    return
+  fi
+
+  log "[${DOCKER_MAUTIC_ROLE}]: Syncing DB connection into ${MAUTIC_VOLUME_CONFIG}/parameters_local.php from env."
+  cat > "${MAUTIC_VOLUME_CONFIG}/parameters_local.php" <<'PHP'
+<?php
+// Only override a key when its env var is actually set, so a var that
+// isn't provided in a given deployment falls back to local.php's value
+// instead of getting blanked out.
+$parameters = array('db_driver' => 'pdo_mysql');
+foreach ([
+    'db_host' => 'MAUTIC_DB_HOST',
+    'db_port' => 'MAUTIC_DB_PORT',
+    'db_name' => 'MAUTIC_DB_DATABASE',
+    'db_user' => 'MAUTIC_DB_USER',
+    'db_password' => 'MAUTIC_DB_PASSWORD',
+] as $key => $envVar) {
+    $value = getenv($envVar);
+    if (false !== $value && '' !== $value) {
+        $parameters[$key] = $value;
+    }
+}
+PHP
+  chown "${MAUTIC_WWW_USER}:${MAUTIC_WWW_GROUP}" "${MAUTIC_VOLUME_CONFIG}/parameters_local.php"
+}
+
+sync_db_config
+
 # Function to check if database has any tables
 check_database_empty() {
   local table_count
