@@ -1,5 +1,10 @@
 MAUTIC_WEB_CONTAINER := mautic-web
 
+# Raises Composer's GitHub API rate limit during the build (60/hour -> 5000/hour, see Dockerfile).
+# Falls back to an empty value (anonymous requests) if unset and `gh` isn't installed/logged in.
+GITHUB_TOKEN ?= $(shell gh auth token 2>/dev/null)
+export GITHUB_TOKEN
+
 ##
 ## Build
 ##
