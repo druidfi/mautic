@@ -33,6 +33,19 @@ foreach ([
         $parameters[$key] = $value;
     }
 }
+// CORS — CORSMiddleware reads from this file directly (not from the Symfony DI
+// container), so translate the env vars here.
+$corsRestrict = getenv('MAUTIC_CORS_RESTRICT_DOMAINS');
+if (false !== $corsRestrict && '' !== $corsRestrict) {
+    $parameters['cors_restrict_domains'] = filter_var($corsRestrict, FILTER_VALIDATE_BOOLEAN);
+}
+$corsValidDomains = getenv('MAUTIC_CORS_VALID_DOMAINS');
+if (false !== $corsValidDomains && '' !== $corsValidDomains) {
+    $decoded = json_decode($corsValidDomains, true);
+    if (is_array($decoded)) {
+        $parameters['cors_valid_domains'] = $decoded;
+    }
+}
 PHP
   chown "${MAUTIC_WWW_USER}:${MAUTIC_WWW_GROUP}" "${MAUTIC_VOLUME_CONFIG}/parameters_local.php"
 }
