@@ -15,7 +15,7 @@ x-environment: &mautic-environment-vars
   MAUTIC_API_ENABLE_BASIC_AUTH: true
   # CORS
   MAUTIC_CORS_RESTRICT_DOMAINS: true
-  MAUTIC_CORS_VALID_DOMAINS: '["https:/drupal.org"]'
+  MAUTIC_CORS_VALID_DOMAINS: '["https://drupal.org"]'
   # Database
   MAUTIC_DB_HOST: mautic-db
   MAUTIC_DB_PORT: 3306
