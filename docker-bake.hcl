@@ -24,9 +24,6 @@ target "common" {
     "org.opencontainers.image.vendor" = "Druid Oy"
     "org.opencontainers.image.created" = timestamp()
   }
-  contexts = {
-    mautic_multi_captcha_bundle = "./files/MauticMultiCaptchaBundle"
-  }
   # Optional GitHub token for Composer, read from $GITHUB_TOKEN if set (see Dockerfile). Not
   # required -- the secret is simply empty and unused when the env var isn't set.
   secret = ["id=github_token,env=GITHUB_TOKEN"]

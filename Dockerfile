@@ -27,18 +27,11 @@ RUN --mount=type=secret,id=github_token \
     (test -s /run/secrets/github_token && composer config -g github-oauth.github.com "$(cat /run/secrets/github_token)") || true
 
 # Install third-party plugins via Composer
-# Install multi-captcha bundle from local path context (avoids GitHub auth)
-# Remove vendor/ — it was built on a different PHP version and must not be used here
-# Use symlink:false so Composer copies the bundle instead of symlinking it,
-# preventing the old vendor/ from leaking into the final image.
-COPY --from=mautic_multi_captcha_bundle . /tmp/mautic-multi-captcha-bundle
-# Copy bundle directly to plugins (same approach as DruidXPBundle) and install
-# only its external dependency into the main vendor. Avoids Composer creating
-# a bundle-local vendor/ with a PHP 8.4-generated platform_check.php.
-RUN rm -rf /tmp/mautic-multi-captcha-bundle/vendor /tmp/mautic-multi-captcha-bundle/composer.lock && \
-    cp -rp /tmp/mautic-multi-captcha-bundle /var/www/html/docroot/plugins/MauticMultiCaptchaBundle && \
-    composer config platform.php 8.3.33 && \
-    composer require --no-interaction --no-progress --no-scripts "altcha-org/altcha:^2.0"
+RUN composer config platform.php 8.3.33 && \
+    composer config repositories.druidfi-altcha '{"type":"vcs","url":"https://github.com/druidfi/mautic-altcha-bundle"}' && \
+    composer require --no-interaction --no-progress --no-scripts \
+        "firemultimedia/mautic-multi-captcha-bundle:1.0.9" \
+        "druidfi/mautic-altcha-bundle:1.0"
 
 # NOTE: This must be last step
 # Make sure var folder is empty
