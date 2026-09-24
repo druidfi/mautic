@@ -27,8 +27,11 @@ RUN --mount=type=secret,id=github_token \
     (test -s /run/secrets/github_token && composer config -g github-oauth.github.com "$(cat /run/secrets/github_token)") || true
 
 # Install third-party plugins via Composer
-RUN composer require --no-interaction --no-progress --no-scripts \
-    firemultimedia/mautic-multi-captcha-bundle
+RUN composer config platform.php 8.3.33 && \
+    composer config repositories.druidfi-altcha '{"type":"vcs","url":"https://github.com/druidfi/mautic-altcha-bundle"}' && \
+    composer require --no-interaction --no-progress --no-scripts \
+        "firemultimedia/mautic-multi-captcha-bundle:1.0.9" \
+        "druidfi/mautic-altcha-bundle:1.0"
 
 # NOTE: This must be last step
 # Make sure var folder is empty
