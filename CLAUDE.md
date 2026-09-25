@@ -22,7 +22,7 @@ Images are published to Docker Hub: [druidfi/mautic](https://hub.docker.com/r/dr
 
 **`docker-bake.hcl`** defines the actual build matrix: 2 targets (`mautic-71`, `mautic-71-dxp`), each multi-arch (`linux/amd64`, `linux/arm64`), tagged with major, major.minor, and full version. The Mautic upstream version pin lives here (`contexts.mautic_upstream`), not in the Dockerfile — bump it here when updating Mautic core.
 
-**`files/7/plugins/DruidXPBundle`** — a small custom Mautic plugin that adds a "Manage Content" menu item linking back to the paired Drupal site (only rendered when `DRUPAL_HOSTNAME` env var is set), plus CLI commands (`mautic:webhooks:create`, webhook update command) for managing webhooks from the console.
+**`files/7/plugins/DruidXPBundle`** — a small custom Mautic plugin that adds a "Manage Content" menu item linking back to the paired Drupal site (only rendered when the `DRUPAL_URL` or `DRUPAL_HOSTNAME` env var is set; `DRUPAL_URL` is a full URL and takes precedence, `DRUPAL_HOSTNAME` is linked with `https://`), plus CLI commands (`mautic:webhooks:create`, webhook update command) for managing webhooks from the console.
 
 **`compose.yaml` / `.env`** — a local test harness only (not used in production deploys). Spins up the built image plus a MariaDB 10.11 container, wired for Traefik/Stonehenge routing at `MAUTIC_HOSTNAME`. The commented-out `mautic-cron` / `mautic-worker` services and volume mounts show the intended production shape (separate web/cron/worker roles sharing one image via `DOCKER_MAUTIC_ROLE`), but are disabled for local testing since the Makefile's `up` target only needs `mautic-web` + `mautic-db`.
 
