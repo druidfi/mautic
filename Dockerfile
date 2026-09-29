@@ -18,6 +18,11 @@ COPY files/entrypoint_mautic_web.sh /entrypoint_mautic_web.sh
 # Copy custom supervisord configuration
 COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Fix PHP Warning: Trying to access array offset on false in SAMLEnvVars.php
+# parse_url() returns false for invalid/missing site_url; guard array access before use.
+# Upstream issue: https://github.com/mautic/mautic/issues/TBD
+COPY files/patches/SAMLEnvVars.php /var/www/html/docroot/app/bundles/CoreBundle/Loader/EnvVars/SAMLEnvVars.php
+
 WORKDIR /var/www/html
 
 # Optional: authenticate Composer's GitHub API calls to raise the unauthenticated 60 req/hour
