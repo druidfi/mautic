@@ -73,6 +73,11 @@ RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
 
 RUN composer audit --no-dev --abandoned=ignore
 
+# Build GrapesJS assets (not compiled in upstream Mautic release packages)
+RUN cd /var/www/html/docroot/plugins/GrapesJsBuilderBundle \
+    && npm install \
+    && npm run build
+
 #
 # DXP variant v7.2
 #
