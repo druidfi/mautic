@@ -1,10 +1,21 @@
 #syntax=docker/dockerfile:1
 
+# Issue: https://github.com/mautic/docker-mautic/issues/479
+FROM mautic_upstream AS grapejs-builder
+
+RUN cd /var/www/html/docroot/plugins/GrapesJsBuilderBundle \
+    && npm install \
+    && npm run build
+
 FROM mautic_upstream AS base
 
 # Worker defaults (can be overridden via environment variables)
 ENV DOCKER_MAUTIC_WORKER_MEMORY_LIMIT=128M \
     DOCKER_MAUTIC_WORKER_TIME_LIMIT=3600
+
+# Issue: https://github.com/mautic/docker-mautic/issues/479
+COPY --from=grapejs-builder /var/www/html/docroot/plugins/GrapesJsBuilderBundle/Assets/library/js/dist /var/www/html/docroot/plugins/GrapesJsBuilderBundle/Assets/library/js/dist
+RUN test -d /var/www/html/docroot/plugins/GrapesJsBuilderBundle/Assets/library/js/dist
 
 # Fix base image PHP errors
 RUN apt-get update && apt-get install -y libavif15 libxpm4 libwebp7 && rm -rf /var/lib/apt/lists/*
