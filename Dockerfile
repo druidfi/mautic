@@ -39,7 +39,8 @@ RUN --mount=type=secret,id=github_token \
 
 # Install third-party plugins via Composer
 RUN composer require --no-interaction --no-progress --no-scripts \
-    firemultimedia/mautic-multi-captcha-bundle
+    firemultimedia/mautic-multi-captcha-bundle \
+    druidfi/mautic-altcha-bundle
 
 # NOTE: This must be last step
 # Make sure var folder is empty
