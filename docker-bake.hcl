@@ -1,5 +1,5 @@
 variable "REPO_BASE" {
-  default = "druidfi/mautic"
+  default = "ghcr.io/druidfi/mautic"
 }
 
 group "default" {
