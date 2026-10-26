@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 See `/CLAUDE.md` (monorepo root) for Druid.fi platform standards. This file documents this project's specifics only.
 
@@ -57,3 +57,31 @@ docker compose exec -it -u www-data -w /var/www/html mautic-web php ./bin/consol
 - Bake target and Dockerfile stage names use major.minor (`mautic-71`, `mautic_base_71`, `mautic_dxp_71`), not just major — this lets a new minor (e.g. 7.2) or major (8.0) get its own set of targets/stages without colliding with or overwriting the current one during the transition. When bumping the version, add new `-XY`-suffixed targets/stages rather than renaming in place, update `docker-bake.hcl` (`docker-image://` context + `tags` list), and only remove the old ones once the cutover is done.
 - When adding a Composer hotfix or plugin, add it to the relevant `RUN composer update|require` block in the `base` stage of the Dockerfile.
 - DXP-only branding assets (logo, favicon) live under `files/shared/dxp/`; the non-DXP image build never touches them.
+
+## Checking for new upstream releases
+
+We build on top of `mautic/mautic:<version>-apache`, so a new Mautic release can't be picked up until upstream publishes that image. Upstream images come from [mautic/docker-mautic](https://github.com/mautic/docker-mautic); its "Build and publish a Docker image" workflow is started **manually** (`workflow_dispatch`) on `main`. It does not run automatically on a Mautic release, so the image can lag the [GitHub release](https://github.com/mautic/mautic/releases) by hours or days.
+
+```bash
+# Does the upstream image tag exist yet? (200 = yes, 404 = not yet)
+curl -s -o /dev/null -w "%{http_code}\n" https://hub.docker.com/v2/repositories/mautic/mautic/tags/7.2.2-apache
+
+# Most recently pushed upstream tags
+curl -s "https://hub.docker.com/v2/repositories/mautic/mautic/tags?page_size=15&ordering=last_updated" \
+  | jq -r '.results[] | "\(.name)\t\(.last_updated)"'
+
+# Have we published it? (same check for druidfi/mautic-dxp)
+curl -s -o /dev/null -w "%{http_code}\n" https://hub.docker.com/v2/repositories/druidfi/mautic/tags/7.2.2
+
+# When was the Mautic release published?
+gh release view 7.2.2 -R mautic/mautic --json publishedAt -q .publishedAt
+
+# Upstream image builds: recent publish runs on main, and anything running right now
+gh run list -R mautic/docker-mautic -b main -L 8 \
+  --json workflowName,status,conclusion,createdAt,event \
+  | jq -r '.[] | "\(.createdAt)\t\(.workflowName)\t\(.status)/\(.conclusion)\t\(.event)"'
+gh run list -R mautic/docker-mautic -s in_progress
+gh run list -R mautic/docker-mautic -s queued
+```
+
+Once the upstream tag exists, bump the `mautic_upstream` context (and `tags`) in `docker-bake.hcl` and run `make bake-push`.
