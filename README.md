@@ -2,8 +2,8 @@
 
 ## Variants
 
-- [druidfi/mautic](https://hub.docker.com/r/druidfi/mautic/tags) - Default image with no DXP brand
-- [druidfi/mautic-dxp](https://hub.docker.com/r/druidfi/mautic-dxp/tags) - DXP branded image
+- [ghcr.io/druidfi/mautic](https://github.com/druidfi/druid-mautic-images/pkgs/container/mautic) - Default image with no DXP brand
+- [ghcr.io/druidfi/mautic-dxp](https://github.com/druidfi/druid-mautic-images/pkgs/container/mautic-dxp) - DXP branded image
 
 ## Tagging
 
@@ -25,7 +25,7 @@ Build images locally:
 docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load --set '*.platform=linux/arm64'
 ```
 
-Build and push images (needs Docker Hub credentials):
+Build and push images (needs `docker login ghcr.io` with a token that has `write:packages`):
 
 ```console
 docker buildx inspect mautic-builder >/dev/null 2>&1 || docker buildx create --name mautic-builder --platform linux/amd64,linux/arm64

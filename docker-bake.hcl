@@ -61,13 +61,13 @@ target "mautic-72" {
     args = {
     }
     contexts = {
-        mautic_upstream = "docker-image://mautic/mautic:7.2.1-apache"
+        mautic_upstream = "docker-image://mautic/mautic:7.2.2-apache"
     }
     target = "mautic_base_72"
     tags = [
         "${REPO_BASE}:7",
         "${REPO_BASE}:7.2",
-        "${REPO_BASE}:7.2.1",
+        "${REPO_BASE}:7.2.2",
     ]
 }
 
@@ -77,6 +77,6 @@ target "mautic-72-dxp" {
     tags = [
         "${REPO_BASE}-dxp:7",
         "${REPO_BASE}-dxp:7.2",
-        "${REPO_BASE}-dxp:7.2.1",
+        "${REPO_BASE}-dxp:7.2.2",
     ]
 }

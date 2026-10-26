@@ -8,7 +8,7 @@ See `/CLAUDE.md` (monorepo root) for Druid.fi platform standards. This file docu
 
 Builds and publishes the `druidfi/mautic` and `druidfi/mautic-dxp` Docker images — Mautic marketing automation, patched with hotfixes and Druid-specific customizations, in a "plain" variant and a "DXP" variant (branded/wired for Drupal + Mautic integration, see `dxp/` projects in the monorepo root). It does not contain a running application of its own; it's a Dockerfile + build config + a small Mautic plugin, tested via `compose.yaml`.
 
-Images are published to Docker Hub: [druidfi/mautic](https://hub.docker.com/r/druidfi/mautic/tags) and [druidfi/mautic-dxp](https://hub.docker.com/r/druidfi/mautic-dxp/tags).
+Images are published to GitHub Container Registry: [ghcr.io/druidfi/mautic](https://github.com/druidfi/druid-mautic-images/pkgs/container/mautic) and [ghcr.io/druidfi/mautic-dxp](https://github.com/druidfi/druid-mautic-images/pkgs/container/mautic-dxp) (`REPO_BASE` in `docker-bake.hcl`).
 
 ## Architecture
 
@@ -38,7 +38,7 @@ Images are published to Docker Hub: [druidfi/mautic](https://hub.docker.com/r/dr
 # Build
 docker buildx bake -f docker-bake.hcl --print   # print the build plan / resolved targets
 make bake                                        # build both targets locally (linux/arm64, no cache)
-make bake-push                                   # multi-arch build + push to Docker Hub (needs Docker Hub creds; creates/uses a buildx builder)
+make bake-push                                   # multi-arch build + push to GHCR (needs `docker login ghcr.io`; creates/uses a buildx builder)
 
 # Local test environment (uses compose.yaml + .env)
 make up                                          # start mautic-web + mautic-db, wait for healthy
@@ -70,8 +70,8 @@ curl -s -o /dev/null -w "%{http_code}\n" https://hub.docker.com/v2/repositories/
 curl -s "https://hub.docker.com/v2/repositories/mautic/mautic/tags?page_size=15&ordering=last_updated" \
   | jq -r '.results[] | "\(.name)\t\(.last_updated)"'
 
-# Have we published it? (same check for druidfi/mautic-dxp)
-curl -s -o /dev/null -w "%{http_code}\n" https://hub.docker.com/v2/repositories/druidfi/mautic/tags/7.2.2
+# Have we published it? (same check for ghcr.io/druidfi/mautic-dxp)
+docker manifest inspect ghcr.io/druidfi/mautic:7.2.2 >/dev/null 2>&1 && echo yes || echo no
 
 # When was the Mautic release published?
 gh release view 7.2.2 -R mautic/mautic --json publishedAt -q .publishedAt

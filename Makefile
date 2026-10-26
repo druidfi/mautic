@@ -18,7 +18,7 @@ bake: ## Build images locally (linux/arm64)
 	docker buildx bake -f docker-bake.hcl --pull --progress plain --no-cache --load --set '*.platform=linux/arm64'
 
 .PHONY: bake-push
-bake-push: ## Build and push images to Docker Hub (needs credentials)
+bake-push: ## Build and push images to GHCR (needs credentials)
 	docker buildx inspect mautic-builder >/dev/null 2>&1 || docker buildx create --name mautic-builder --platform linux/amd64,linux/arm64
 	docker buildx use mautic-builder
 	docker buildx bake -f docker-bake.hcl --pull --no-cache --push
