@@ -33,7 +33,7 @@ RUN --mount=type=secret,id=github_token \
 # Install third-party plugins via Composer
 RUN composer require --no-interaction --no-progress --no-scripts \
     firemultimedia/mautic-multi-captcha-bundle \
-    druidfi/mautic-altcha-bundle \
+    druidfi/mautic-altcha-bundle:1.0.1 \
     druidfi/mautic-bounce-webhook-bundle
 
 # NOTE: This must be last step
