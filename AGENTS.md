@@ -15,12 +15,12 @@ Images are published to GitHub Container Registry: [ghcr.io/druidfi/mautic](http
 **Multi-stage Dockerfile (`Dockerfile`)** layers on top of the official `mautic/mautic:<version>-apache` image (injected as the `mautic_upstream` build context, not a static `FROM`):
 
 1. `base` — applies Composer hotfixes (specific `symfony/*` + `twig/twig` packages) and adds the `firemultimedia/mautic-multi-captcha-bundle` plugin. Also installs a few apt packages to fix upstream PHP errors, and copies in the custom Apache vhost, entrypoint script, and supervisord config.
-2. `mautic_base_71` — copies the `DruidXPBundle` Mautic plugin from `files/7/plugins/`.
-3. `mautic_dxp_71` — layers on DXP branding assets (favicon, logo) from `files/shared/dxp/`.
+2. `mautic_base_72` — copies the `DruidXPBundle` Mautic plugin from `files/7/plugins/`.
+3. `mautic_dxp_72` — layers on DXP branding assets (favicon, logo) from `files/shared/dxp/`.
 
-**Only one Mautic major version is built** (currently 7.1.x). Mautic 5 support was dropped; `files/7/` holds the plugin code, there's no more per-major split to keep in sync.
+**Only one Mautic major version is built** (currently 7.2.x). Mautic 5 support was dropped; `files/7/` holds the plugin code, there's no more per-major split to keep in sync.
 
-**`docker-bake.hcl`** defines the actual build matrix: 2 targets (`mautic-71`, `mautic-71-dxp`), each multi-arch (`linux/amd64`, `linux/arm64`), tagged with major, major.minor, and full version. The Mautic upstream version pin lives here (`contexts.mautic_upstream`), not in the Dockerfile — bump it here when updating Mautic core.
+**`docker-bake.hcl`** defines the actual build matrix: 2 targets (`mautic-72`, `mautic-72-dxp`), each multi-arch (`linux/amd64`, `linux/arm64`), tagged with major, major.minor, and full version. The Mautic upstream version pin lives here (`contexts.mautic_upstream`), not in the Dockerfile — bump it here when updating Mautic core.
 
 **`files/7/plugins/DruidXPBundle`** — a small custom Mautic plugin that adds a "Manage Content" menu item linking back to the paired Drupal site (only rendered when the `DRUPAL_URL` or `DRUPAL_HOSTNAME` env var is set; `DRUPAL_URL` is a full URL and takes precedence, `DRUPAL_HOSTNAME` is linked with `https://`), plus CLI commands (`mautic:webhooks:create`, webhook update command) for managing webhooks from the console.
 
@@ -54,7 +54,7 @@ docker compose exec -it -u www-data -w /var/www/html mautic-web php ./bin/consol
 
 ## Working in this repo
 
-- Bake target and Dockerfile stage names use major.minor (`mautic-71`, `mautic_base_71`, `mautic_dxp_71`), not just major — this lets a new minor (e.g. 7.2) or major (8.0) get its own set of targets/stages without colliding with or overwriting the current one during the transition. When bumping the version, add new `-XY`-suffixed targets/stages rather than renaming in place, update `docker-bake.hcl` (`docker-image://` context + `tags` list), and only remove the old ones once the cutover is done.
+- Bake target and Dockerfile stage names use major.minor (`mautic-72`, `mautic_base_72`, `mautic_dxp_72`), not just major — this lets a new minor (e.g. 7.3) or major (8.0) get its own set of targets/stages without colliding with or overwriting the current one during the transition. When bumping the version, add new `-XY`-suffixed targets/stages rather than renaming in place, update `docker-bake.hcl` (`docker-image://` context + `tags` list), and only remove the old ones once the cutover is done.
 - When adding a Composer hotfix or plugin, add it to the relevant `RUN composer update|require` block in the `base` stage of the Dockerfile.
 - DXP-only branding assets (logo, favicon) live under `files/shared/dxp/`; the non-DXP image build never touches them.
 

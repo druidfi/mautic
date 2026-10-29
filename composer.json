@@ -10,6 +10,6 @@
     ],
     "require": {
         "php": "^8.3",
-        "mautic/core-lib": "^7.1"
+        "mautic/core-lib": "^7.2"
     }
 }

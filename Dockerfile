@@ -36,37 +36,15 @@ RUN composer require --no-interaction --no-progress --no-scripts \
     druidfi/mautic-altcha-bundle \
     druidfi/mautic-bounce-webhook-bundle
 
+# Do HOTFIX updates with Composer
+RUN composer update --no-interaction --no-progress --no-scripts \
+    symfony/mime
+
 # NOTE: This must be last step
 # Make sure var folder is empty
 RUN rm -rf /var/www/html/var && \
     mkdir -p /var/www/html/var && \
     chown -R www-data:www-data /var/www/html/var /var/www/html/docroot/plugins
-
-#
-# Base Mautic image v7.1
-#
-FROM base AS mautic_base_71
-
-# Copy plugins
-COPY --chown=www-data:www-data files/7/plugins/DruidXPBundle /var/www/html/docroot/plugins/DruidXPBundle
-RUN test -f /var/www/html/docroot/plugins/DruidXPBundle/DruidXPBundle.php
-
-# Do HOTFIX updates with Composer
-RUN composer update --no-interaction --no-progress --no-scripts \
-    guzzlehttp/guzzle \
-    phpoffice/phpspreadsheet \
-    studio-42/elfinder
-
-#RUN composer config --json audit.ignore '["PKSA-fy2t-3c5f-827y", "PKSA-qxvb-2bpp-dnk6"]'
-RUN composer audit --no-dev --abandoned=ignore || true
-
-#
-# DXP variant v7.1
-#
-FROM mautic_base_71 AS mautic_dxp_71
-
-COPY --chown=www-data:www-data files/shared/dxp/favicon.ico /var/www/html/docroot/app/assets/images/favicon.ico
-COPY --chown=www-data:www-data files/shared/dxp/logo* /var/www/html/docroot/app/bundles/CoreBundle/Assets/images/
 
 #
 # Base Mautic image v7.2

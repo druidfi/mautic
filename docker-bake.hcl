@@ -8,8 +8,6 @@ group "default" {
 
 group "mautic-variants" {
   targets = [
-      #"mautic-71",
-      #"mautic-71-dxp",
       "mautic-72",
       "mautic-72-dxp",
   ]
@@ -32,29 +30,6 @@ target "common" {
 #
 # MAUTIC
 #
-
-target "mautic-71" {
-    inherits = ["common"]
-    args = {
-    }
-    contexts = {
-        mautic_upstream = "docker-image://mautic/mautic:7.1.3-apache"
-    }
-    target = "mautic_base_71"
-    tags = [
-        "${REPO_BASE}:7.1",
-        "${REPO_BASE}:7.1.3",
-    ]
-}
-
-target "mautic-71-dxp" {
-    inherits = ["mautic-71"]
-    target = "mautic_dxp_71"
-    tags = [
-        "${REPO_BASE}-dxp:7.1",
-        "${REPO_BASE}-dxp:7.1.3",
-    ]
-}
 
 target "mautic-72" {
     inherits = ["common"]
