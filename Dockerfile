@@ -38,7 +38,8 @@ RUN composer require --no-interaction --no-progress --no-scripts \
 
 # Do HOTFIX updates with Composer
 RUN composer update --no-interaction --no-progress --no-scripts \
-    symfony/mime
+    "symfony/*" \
+    twig/twig
 
 # NOTE: This must be last step
 # Make sure var folder is empty
