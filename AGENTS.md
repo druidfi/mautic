@@ -64,17 +64,17 @@ We build on top of `mautic/mautic:<version>-apache`, so a new Mautic release can
 
 ```bash
 # Does the upstream image tag exist yet? (200 = yes, 404 = not yet)
-curl -s -o /dev/null -w "%{http_code}\n" https://hub.docker.com/v2/repositories/mautic/mautic/tags/7.2.2-apache
+curl -s -o /dev/null -w "%{http_code}\n" https://hub.docker.com/v2/repositories/mautic/mautic/tags/7.2.3-apache
 
 # Most recently pushed upstream tags
 curl -s "https://hub.docker.com/v2/repositories/mautic/mautic/tags?page_size=15&ordering=last_updated" \
   | jq -r '.results[] | "\(.name)\t\(.last_updated)"'
 
 # Have we published it? (same check for ghcr.io/druidfi/mautic-dxp)
-docker manifest inspect ghcr.io/druidfi/mautic:7.2.2 >/dev/null 2>&1 && echo yes || echo no
+docker manifest inspect ghcr.io/druidfi/mautic:7.2.3 >/dev/null 2>&1 && echo yes || echo no
 
 # When was the Mautic release published?
-gh release view 7.2.2 -R mautic/mautic --json publishedAt -q .publishedAt
+gh release view 7.2.3 -R mautic/mautic --json publishedAt -q .publishedAt
 
 # Upstream image builds: recent publish runs on main, and anything running right now
 gh run list -R mautic/docker-mautic -b main -L 8 \
