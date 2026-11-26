@@ -41,6 +41,9 @@ RUN composer update --no-interaction --no-progress --no-scripts \
     "symfony/*" \
     twig/twig
 
+# Use this to check open security updates with "make bake" locally
+#RUN composer audit --abandoned=ignore
+
 # NOTE: This must be last step
 # Make sure var folder is empty
 RUN rm -rf /var/www/html/var && \
